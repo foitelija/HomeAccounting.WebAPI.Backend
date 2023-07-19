@@ -1,4 +1,5 @@
-﻿using HomeAccounting.Application.Commands.Purchases.Requests.Commands;
+﻿using HomeAccounting.Application.Commands.Purchases.Handlers.Commands;
+using HomeAccounting.Application.Commands.Purchases.Requests.Commands;
 using HomeAccounting.Application.Commands.Purchases.Requests.Queries;
 using HomeAccounting.Application.Responses;
 using HomeAccounting.Domain;
@@ -48,14 +49,24 @@ namespace HomeAccounting.API.Controllers
 
         // PUT api/<PurchasesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult<BaseServicesResponse>> Put(int id, [FromBody] Purchase purchase)
         {
+            var command = new UpdatePurchaseCommand { Id = id, Purchase = purchase };
+            var response = await _mediator.Send(command);
+            return Ok(purchase);
         }
+
+
 
         // DELETE api/<PurchasesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<BaseServicesResponse>> Delete(int id)
         {
+            var command = new DeletePurchaseCommand { Id = id };
+            var response = await _mediator.Send(command);
+            return Ok(response);
         }
     }
 }
