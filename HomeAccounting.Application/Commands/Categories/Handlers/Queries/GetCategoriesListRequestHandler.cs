@@ -15,9 +15,11 @@ namespace HomeAccounting.Application.Commands.Categories.Handlers.Queries
         {
             var categories = new List<Category>
             {
-                new Category { Id = 1, Color = "Green", Name = "Test Name" },
-                new Category { Id = 2, Color = "Yellow", Name = "Yellow Name" },
-                new Category { Id = 3, Color = "Dark Purple", Name = "Foitelija" },
+                new Category { Id = 1, Name = "Продукты питания" },
+                new Category { Id = 2, Name = "Транспорт" },
+                new Category { Id = 3, Name = "Мобильная связь" },
+                new Category { Id = 4, Name = "Интернет" },
+                new Category { Id = 5, Name = "Развлечения" }
             };
 
             await Task.Delay(TimeSpan.FromSeconds(2));
