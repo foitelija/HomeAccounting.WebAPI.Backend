@@ -6,9 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeAccounting.Application.Commands.Categories.Requests.Queries
+namespace HomeAccounting.Application.Commands.Purchases.Requests.Queries
 {
-    public class GetCategoriesListRequest : IRequest<List<Category>>
+    public class GetPurchaseDetailRequest : IRequest<Purchase>
     {
+        public int Id { get; set; }
     }
 }

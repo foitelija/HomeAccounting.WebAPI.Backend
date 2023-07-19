@@ -21,6 +21,7 @@ namespace HomeAccounting.Application.Commands.Categories.Handlers.Commands
                 var category = await _categoryRepository.GetById(request.Id);
 
                 request.Category.Id = category.Id;
+                category.Name = request.Category.Name;
 
                 await _categoryRepository.Update(category);
 

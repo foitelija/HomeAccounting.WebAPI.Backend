@@ -31,7 +31,7 @@ namespace HomeAccounting.API.Controllers
 
         // GET: api/<CategoriesController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<Category>>> Get(int id)
+        public async Task<ActionResult<Category>> Get(int id)
         {
             var category = await _mediator.Send(new GetCategoryDetailRequest { Id = id });
             return Ok(category);

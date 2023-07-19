@@ -22,6 +22,8 @@ namespace HomeAccounting.Persistence
             });
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             return services;
