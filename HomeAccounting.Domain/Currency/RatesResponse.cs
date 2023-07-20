@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HomeAccounting.Domain.Currency
+﻿namespace HomeAccounting.Domain.Currency
 {
     public class RatesResponse
     {
-        public decimal MoneySpent { get; set; }
-        public string SpentForWhat { get; set; }
-        public string? SpentComment { get; set; }
-        public string NameWhoSpent { get; set; }
-        public IDictionary<string, decimal> Currency { get; set; }
+        public decimal amountMoneySpent { get; set; }
+        public string moneySpentOn { get; set; }
+        public string? purchaseComment { get; set; }
+        public string whoMadePurchase { get; set; }
+        public IDictionary<string, decimal> currencyConversion { get; set; }
     }
 }

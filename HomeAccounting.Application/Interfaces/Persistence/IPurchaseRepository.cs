@@ -1,6 +1,6 @@
 ﻿using HomeAccounting.Domain;
 
-namespace HomeAccounting.Application.Interfaces.Infrastructure
+namespace HomeAccounting.Application.Interfaces.Persistence
 {
     public interface IPurchaseRepository : IGenericRepository<Purchase>
     {

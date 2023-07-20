@@ -1,4 +1,4 @@
-﻿using HomeAccounting.Application.Interfaces.Infrastructure;
+﻿using HomeAccounting.Application.Interfaces.Persistence;
 using HomeAccounting.Domain;
 using HomeAccounting.Persistence.Context;
 using Microsoft.EntityFrameworkCore;

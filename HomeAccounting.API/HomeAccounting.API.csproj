@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeAccounting.Application\HomeAccounting.Application.csproj" />
+    <ProjectReference Include="..\HomeAccounting.Infrastructure\HomeAccounting.Infrastructure.csproj" />
     <ProjectReference Include="..\HomeAccounting.Persistence\HomeAccounting.Persistence.csproj" />
   </ItemGroup>
 

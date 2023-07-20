@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeAccounting.Application.Interfaces.Infrastructure
+namespace HomeAccounting.Application.Interfaces.Persistence
 {
     public interface ICategoryRepository : IGenericRepository<Category>
     {

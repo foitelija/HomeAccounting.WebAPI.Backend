@@ -28,6 +28,20 @@ namespace HomeAccounting.API.Controllers
                 var purchase = await _mediator.Send(new GetPurchaseDetailRequest { Id = purchaseCode });
                 var rates = await _mediator.Send(new GetRatesListRequest { Cur_ID = currCode });
 
+                var ratesCompare = new Dictionary<string, decimal>();
+
+                foreach (var rate in rates)
+                {
+                    decimal convert = purchase.Price / rate.Cur_OfficialRate ?? 0;
+                    ratesCompare.Add(rate.Cur_Name, Math.Round(convert,2));
+                }
+
+                ratesResp.amountMoneySpent = purchase.Price;
+                ratesResp.moneySpentOn = purchase.Category.Name;
+                ratesResp.whoMadePurchase = purchase.FamilyMember.Name;
+                ratesResp.purchaseComment = purchase.Comment;
+                ratesResp.currencyConversion = ratesCompare;
+
                 return ratesResp;
             }
             catch (HttpRequestException ex)

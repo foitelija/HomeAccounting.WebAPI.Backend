@@ -1,5 +1,5 @@
 ﻿using HomeAccounting.Application.Commands.Categories.Requests.Commands;
-using HomeAccounting.Application.Interfaces.Infrastructure;
+using HomeAccounting.Application.Interfaces.Persistence;
 using HomeAccounting.Application.Responses;
 using HomeAccounting.Domain;
 using MediatR;
