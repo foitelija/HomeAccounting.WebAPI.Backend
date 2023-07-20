@@ -1,5 +1,6 @@
 ﻿using HomeAccounting.Application.Commands.Currencies.Requests.Queries;
 using HomeAccounting.Application.Commands.Purchases.Requests.Queries;
+using HomeAccounting.Application.Interfaces.Infrastructure;
 using HomeAccounting.Domain.Currency;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -12,37 +13,26 @@ namespace HomeAccounting.API.Controllers
     public class CurrenciesController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ICurrencyService _currencyService;
 
-        public CurrenciesController(IMediator mediator)
+        public CurrenciesController(IMediator mediator, ICurrencyService currencyService)
         {
             _mediator = mediator;
+            _currencyService = currencyService;
         }
 
         [HttpGet("Convert")]
-        public async Task<ActionResult<RatesResponse>> Get([FromQuery] int purchaseCode, [FromQuery] int currCode)
+        public async Task<ActionResult<СurrencyСonversion>> Get([FromQuery] int purchaseCode, [FromQuery] int currCode)
         {
             try
             {
-                var ratesResp = new RatesResponse();
-
                 var purchase = await _mediator.Send(new GetPurchaseDetailRequest { Id = purchaseCode });
+                
                 var rates = await _mediator.Send(new GetRatesListRequest { Cur_ID = currCode });
+                
+                var conversion = await _currencyService.GetCurrencyResponseAsync(rates, purchase);
 
-                var ratesCompare = new Dictionary<string, decimal>();
-
-                foreach (var rate in rates)
-                {
-                    decimal convert = purchase.Price / rate.Cur_OfficialRate ?? 0;
-                    ratesCompare.Add(rate.Cur_Name, Math.Round(convert,2));
-                }
-
-                ratesResp.amountMoneySpent = purchase.Price;
-                ratesResp.moneySpentOn = purchase.Category.Name;
-                ratesResp.whoMadePurchase = purchase.FamilyMember.Name;
-                ratesResp.purchaseComment = purchase.Comment;
-                ratesResp.currencyConversion = ratesCompare;
-
-                return ratesResp;
+                return conversion;
             }
             catch (HttpRequestException ex)
             {

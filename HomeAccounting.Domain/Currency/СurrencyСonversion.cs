@@ -1,6 +1,6 @@
 ﻿namespace HomeAccounting.Domain.Currency
 {
-    public class RatesResponse
+    public class СurrencyСonversion
     {
         public decimal amountMoneySpent { get; set; }
         public string moneySpentOn { get; set; }
