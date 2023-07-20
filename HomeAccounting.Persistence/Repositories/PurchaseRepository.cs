@@ -14,6 +14,17 @@ namespace HomeAccounting.Persistence.Repositories
             _context = context;
         }
 
+        public async Task<List<Purchase>> GetPurchasesListWithDetailsAndPaginationAsync(int skip, int take)
+        {
+            var response =  await _context.PurchaseOrders
+                .Include(u => u.FamilyMember)
+                .Include(c => c.Category)
+                .Skip((skip -1 )*take)
+                .Take(take)
+                .ToListAsync();
+            return response;
+        }
+
         public async Task<List<Purchase>> GetPurchasesListWithDetailsAsync()
         {
             var response = await _context.PurchaseOrders.Include(u=>u.FamilyMember).Include(c=>c.Category).ToListAsync();
