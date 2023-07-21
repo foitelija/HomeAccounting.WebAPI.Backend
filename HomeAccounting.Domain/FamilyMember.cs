@@ -10,7 +10,8 @@ namespace HomeAccounting.Domain
     public class FamilyMember : BaseDomainEntity
     {
         public string Login { get; set; }
-        public string Password { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
         public string Name { get; set; }
     }
 }
