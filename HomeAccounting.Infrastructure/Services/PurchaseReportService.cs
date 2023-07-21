@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HomeAccounting.Domain.Statistics.Months;
+using HomeAccounting.Domain.Reports.Months;
 
 namespace HomeAccounting.Infrastructure.Services
 {
@@ -40,6 +40,11 @@ namespace HomeAccounting.Infrastructure.Services
             }).ToList();
 
             return purchaseReports;
+        }
+
+        public Task GetStatisticsPurchaseReports(DateTime dateStart, DateTime dateEnd, int? userId = null, int[] categoryIds = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace HomeAccounting.API.Controllers
         [HttpGet]
         [Route("expenses/month")]
         public async Task<ActionResult<List<PurchaseReportDto>>> GetExpensesByMonth([FromQuery] int? month, [FromQuery] int? userId = null,
-            [FromQuery] int[] categoryIds = null, int page = 1, int pageSize = 2)
+            [FromQuery] int[]? categoryIds = null, int page = 1, int pageSize = 2)
         {
             try
             {
@@ -32,7 +32,12 @@ namespace HomeAccounting.API.Controllers
                 var pageFilter = new PaginationFilter(page, pageSize);
                 var pagedPurchaseReports = purchaseMonthReports.Skip((pageFilter.PageNumber - 1) * pageFilter.PageSize).Take(pageFilter.PageSize).ToList();
 
-                return Ok(pagedPurchaseReports);
+                if(pagedPurchaseReports.Count > 0) 
+                {
+                    return Ok(pagedPurchaseReports);
+                }
+
+                return BadRequest("No data exist");
             }
             catch (Exception ex)
             {
@@ -50,6 +55,8 @@ namespace HomeAccounting.API.Controllers
             {
                 return BadRequest($"{endDate} should be greater than or equal to {startDate}.");
             }
+
+
 
             await Task.Delay(100);
             return Ok();

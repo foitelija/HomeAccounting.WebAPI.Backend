@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeAccounting.Domain.Statistics.Months
+namespace HomeAccounting.Domain.Reports.Months
 {
     public class CategoryDto
     {

@@ -10,5 +10,6 @@ namespace HomeAccounting.Application.Interfaces.Infrastructure
     public interface IPurchaseReportService
     {
         Task<List<PurchaseReportDto>> GetMonthPurchaseReports(int? month, int? userId = null, int[] categoryIds = null);
+        Task GetStatisticsPurchaseReports(DateTime dateStart, DateTime dateEnd, int? userId = null, int[] categoryIds = null);
     }
 }

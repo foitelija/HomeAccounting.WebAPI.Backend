@@ -1,4 +1,4 @@
-﻿using HomeAccounting.Domain.Statistics.Months;
+﻿using HomeAccounting.Domain.Reports.Months;
 using System;
 using System.Collections.Generic;
 using System.Linq;
