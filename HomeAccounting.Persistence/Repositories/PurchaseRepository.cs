@@ -14,7 +14,7 @@ namespace HomeAccounting.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<List<Purchase>> GetPurchasesListWithFiltersAsync(int? month, int? userId, int[] categoryIds)
+        public async Task<List<Purchase>> GetPurchasesListWithFiltersAsync(int? month, int? userId, int[] categoryIds, DateTime? startDate, DateTime? endDatee)
         {
             IQueryable<Purchase> query = _context.PurchaseOrders.Include(u => u.FamilyMember).Include(x => x.Category);
 

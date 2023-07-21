@@ -14,7 +14,7 @@ namespace HomeAccounting.Application.Commands.Purchases.Handlers.Queries
         }
         public async Task<List<Purchase>> Handle(GetPurchasesListWithFiltersRequest request, CancellationToken cancellationToken)
         {
-            var purchasesWithPagination = await _purchaseRepository.GetPurchasesListWithFiltersAsync(request.month, request.userId, request.categoryIds);
+            var purchasesWithPagination = await _purchaseRepository.GetPurchasesListWithFiltersAsync(request.month, request.userId, request.categoryIds, request.startDate, request.endDate);
             return purchasesWithPagination;
         }
     }

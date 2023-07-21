@@ -9,6 +9,7 @@ namespace HomeAccounting.Infrastructure
         public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
         {
             services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<IPurchaseReportService, PurchaseReportService>();
             return services;
         }
     }
