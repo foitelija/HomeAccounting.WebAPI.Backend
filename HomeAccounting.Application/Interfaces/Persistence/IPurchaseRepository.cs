@@ -7,6 +7,6 @@ namespace HomeAccounting.Application.Interfaces.Persistence
         Task<bool> IsCategoryUsedAsync(int categoryId);
         Task<List<Purchase>> GetPurchasesListWithDetailsAsync();
         Task<Purchase> GetPurchasesWithDetailsAsync(int id);
-        Task<List<Purchase>> GetPurchasesListWithDetailsAndPaginationAsync(int skip, int take);
+        Task<List<Purchase>> GetPurchasesListWithFiltersAsync(int? month, int? userId, int[] categoryIds);
     }
 }
