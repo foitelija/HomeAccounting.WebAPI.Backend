@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace HomeAccounting.Application.Responses
 {
-    public class PageResponse
+    public class PageResponse <T>
     {
+        public T Items { get; set; }
+        public int TotalCount { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     }
 }

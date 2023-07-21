@@ -1,7 +1,9 @@
 ﻿using HomeAccounting.Application.Commands.Purchases.Requests.Queries;
 using HomeAccounting.Application.Filters;
 using HomeAccounting.Application.Interfaces.Infrastructure;
+using HomeAccounting.Application.Responses;
 using HomeAccounting.Domain;
+using HomeAccounting.Domain.Reports.Statistics;
 using HomeAccounting.Domain.Statistics;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -23,21 +25,19 @@ namespace HomeAccounting.API.Controllers
 
         [HttpGet]
         [Route("expenses/month")]
-        public async Task<ActionResult<List<PurchaseReportDto>>> GetExpensesByMonth([FromQuery] int? month, [FromQuery] int? userId = null,
-            [FromQuery] int[]? categoryIds = null, int page = 1, int pageSize = 2)
+        public async Task<ActionResult<PageResponse<List<PurchaseReportDto>>>> GetExpensesByMonth([FromQuery] int? month, [FromQuery] int? userId = null,
+            [FromQuery] int[]? categoryIds = null, int page = 1, int pageSize = 5)
         {
             try
             {
-                var purchaseMonthReports = await _purchaseReportService.GetMonthPurchaseReports(month,userId,categoryIds);
-                var pageFilter = new PaginationFilter(page, pageSize);
-                var pagedPurchaseReports = purchaseMonthReports.Skip((pageFilter.PageNumber - 1) * pageFilter.PageSize).Take(pageFilter.PageSize).ToList();
-
-                if(pagedPurchaseReports.Count > 0) 
+                var purchaseMonthReports = await _purchaseReportService.GetMonthPurchaseReports(month,userId,categoryIds, page, pageSize);
+                
+                if(purchaseMonthReports.Items == null || purchaseMonthReports.Items.Count < 1)
                 {
-                    return Ok(pagedPurchaseReports);
+                    return BadRequest("Data not found.");
                 }
 
-                return BadRequest("No data exist");
+                return Ok(purchaseMonthReports);
             }
             catch (Exception ex)
             {
@@ -48,18 +48,21 @@ namespace HomeAccounting.API.Controllers
 
         [HttpGet]
         [Route("expenses/statistics")]
-        public async Task<ActionResult> GetExpenseStatistics([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, [FromQuery] int? userId = null, [FromQuery] int[] categoryIds = null, int page = 1, int pageSize = 2)
+        public async Task<ActionResult<PageResponse<StatisticsResultDto>>> GetExpenseStatistics([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, [FromQuery] int? userId = null, [FromQuery] int[] categoryIds = null, int page = 1, int pageSize = 5)
         {
-
             if (endDate < startDate)
             {
                 return BadRequest($"{endDate} should be greater than or equal to {startDate}.");
             }
 
+            var purchasePeriodReport = await  _purchaseReportService.GetStatisticsPurchaseReports(startDate, endDate, userId, categoryIds, page, pageSize);
 
+            if(purchasePeriodReport.Items.StatisticsByFamilyMember.Count < 1 || purchasePeriodReport.Items.StatisticsByCategory.Count < 1)
+            {
+                return BadRequest("Data not found.");
+            }
 
-            await Task.Delay(100);
-            return Ok();
+            return Ok(purchasePeriodReport);
         }
     }
 }
