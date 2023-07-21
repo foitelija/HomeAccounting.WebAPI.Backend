@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeAccounting.Domain.Reports.Months;
+using HomeAccounting.Domain.Reports.Statistics;
+using System.Collections;
 
 namespace HomeAccounting.Infrastructure.Services
 {
@@ -21,7 +23,7 @@ namespace HomeAccounting.Infrastructure.Services
         }
         public async Task<List<PurchaseReportDto>> GetMonthPurchaseReports(int? month, int? userId = null, int[] categoryIds = null)
         {
-            var filtredPurchases = await _purchaseRepository.GetPurchasesListWithFiltersAsync(month,userId,categoryIds, null,null);
+            var filtredPurchases = await _purchaseRepository.GetPurchasesByMonthAsync(month,userId,categoryIds);
 
             var groupedPurchases = filtredPurchases.GroupBy(x => x.FamilyMember.Name).ToDictionary(g=>g.Key, g=>g.ToList());
 
@@ -42,9 +44,10 @@ namespace HomeAccounting.Infrastructure.Services
             return purchaseReports;
         }
 
-        public Task GetStatisticsPurchaseReports(DateTime dateStart, DateTime dateEnd, int? userId = null, int[] categoryIds = null)
+        public async Task<StatisticsResultDto> GetStatisticsPurchaseReports(DateTime dateStart, DateTime dateEnd, int? userId = null, int[] categoryIds = null)
         {
-            throw new NotImplementedException();
+            var query = await _purchaseRepository.GetPurchasesByPeriodAsync(dateStart, dateEnd, userId, categoryIds);
+            return null;
         }
     }
 }

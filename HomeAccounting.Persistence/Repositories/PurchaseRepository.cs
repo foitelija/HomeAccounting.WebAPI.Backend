@@ -14,7 +14,7 @@ namespace HomeAccounting.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<List<Purchase>> GetPurchasesListWithFiltersAsync(int? month, int? userId, int[] categoryIds, DateTime? startDate, DateTime? endDatee)
+        public async Task<List<Purchase>> GetPurchasesByMonthAsync(int? month, int? userId, int[] categoryIds)
         {
             IQueryable<Purchase> query = _context.PurchaseOrders.Include(u => u.FamilyMember).Include(x => x.Category);
 
@@ -36,20 +36,31 @@ namespace HomeAccounting.Persistence.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<List<Purchase>> GetPurchasesListWithDetailsAndPaginationAsync(int skip, int take)
+        public async Task<List<Purchase>> GetPurchasesByPeriodAsync(DateTime startDate, DateTime endDate, int? userId, int[] categoryIds)
         {
             IQueryable<Purchase> query = _context.PurchaseOrders.Include(u => u.FamilyMember).Include(x => x.Category);
 
+            if(userId.HasValue)
+            {
+                query = query.Where(u => u.FamilyMemberId == userId.Value);
+            }
 
-            var response =  await _context.PurchaseOrders
-                .Include(u => u.FamilyMember)
-                .Where(w => w.FamilyMemberId == 1)
-                .Include(c => c.Category)
-                .Where(x=>x.CategoryId == 1)
-                .Skip((skip -1 )*take)
-                .Take(take)
-                .ToListAsync();
-            return response;
+            if (categoryIds != null && categoryIds.Length > 0)
+            {
+                query = query.Where(e => categoryIds.Contains(e.CategoryId));
+            }
+
+            if (startDate != DateTime.MinValue)
+            {
+                query = query.Where(x=>x.DateCreated >= startDate);
+            }
+
+            if(endDate != DateTime.MinValue)
+            {
+                query = query.Where(x=> x.DateCreated <= endDate);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<List<Purchase>> GetPurchasesListWithDetailsAsync()
