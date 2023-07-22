@@ -154,6 +154,21 @@ namespace HomeAccounting.Infrastructure.Services
 
             return new JwtSecurityTokenHandler().WriteToken(jwtToken);
         }
+
+        public void TokenExpirationCheck(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameters = GetValidationParameters();
+
+            var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+            var expired = validatedToken.ValidTo;
+
+            if (expired < DateTime.UtcNow)
+            {
+                throw new UnauthorizedAccessException("Срок действия токена истек.");
+            }
+        }
         #endregion
     }
 }
