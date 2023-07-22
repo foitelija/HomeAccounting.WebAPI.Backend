@@ -1,6 +1,11 @@
+using HealthChecks.UI.Client;
+using HomeAccounting.API.HealthcheckServices;
 using HomeAccounting.Application;
 using HomeAccounting.Infrastructure;
 using HomeAccounting.Persistence;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.OpenApi.Models;
 
 
@@ -14,9 +19,31 @@ builder.Services.ConfigurePersistenceServices(builder.Configuration);
 builder.Services.ConfigureInfrastructureServices(builder.Configuration);
 #endregion
 
+#region HEALTH CHECK
+builder.Services
+    .AddHealthChecks()
+    .AddCheck<CurrencyApiHealth>("API НБРБ")
+    .AddCheck<DbHealthCheck>("База данных");
+    //.AddCheck<WeatherApiHealth>("тестовое");
+builder.Services
+    .AddHealthChecksUI(options =>
+    {
+        options.AddHealthCheckEndpoint("Healthcheck API", "/healthcheck");
+    })
+    .AddInMemoryStorage();
+#endregion
+
+#region APPLICATION SETTING SERVICE
+builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true;
+});
+#endregion
 
 #region SWAGGER SETTINGS
 builder.Services.AddSwaggerGen(c =>
@@ -69,6 +96,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+#region HEALTH 
+app.MapHealthChecks("/healthcheck", new()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+app.MapHealthChecksUI(options => options.UIPath = "/dashboard");
+#endregion
 
 app.UseAuthentication();
 app.UseAuthorization();

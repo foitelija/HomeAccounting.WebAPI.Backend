@@ -160,7 +160,7 @@ namespace HomeAccounting.Infrastructure.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var validationParameters = GetValidationParameters();
 
-            var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+            tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
 
             var expired = validatedToken.ValidTo;
 

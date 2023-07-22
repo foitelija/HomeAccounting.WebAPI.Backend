@@ -1,13 +1,14 @@
 using HomeAccounting.Application.Interfaces.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace HomeAccounting.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -17,6 +18,7 @@ namespace HomeAccounting.API.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly IAuthService _authService;
+        private readonly IUrlHelper _urlHelper;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger, IAuthService authService)
         {
@@ -25,7 +27,7 @@ namespace HomeAccounting.API.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public ActionResult Get()
         {
             try
             {
@@ -33,18 +35,23 @@ namespace HomeAccounting.API.Controllers
 
                 _authService.TokenExpirationCheck(token);
 
-                return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+                var x = Enumerable.Range(1, 5).Select(index => new WeatherForecast
                 {
                     Date = DateTime.Now.AddDays(index),
                     TemperatureC = Random.Shared.Next(-20, 55),
                     Summary = Summaries[Random.Shared.Next(Summaries.Length)]
                 })
             .ToArray();
+
+                return Ok(x);
             }
             catch(UnauthorizedAccessException ex)
             {
-                var message = ex.Message;
-                return Enumerable.Empty<WeatherForecast>();
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
             
         }
