@@ -3,13 +3,14 @@ using HomeAccounting.Application.Commands.Currencies.Handlers.Queries;
 using HomeAccounting.Infrastructure;
 using HomeAccounting.Persistence;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.ConfigureApplicationServices();
 builder.Services.ConfigurePersistenceServices(builder.Configuration);
-builder.Services.ConfigureInfrastructureServices();
+builder.Services.ConfigureInfrastructureServices(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

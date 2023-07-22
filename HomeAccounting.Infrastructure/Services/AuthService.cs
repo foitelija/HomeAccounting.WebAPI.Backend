@@ -2,11 +2,14 @@
 using HomeAccounting.Application.Interfaces.Persistence;
 using HomeAccounting.Application.Models.Identity;
 using HomeAccounting.Domain;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,17 +19,32 @@ namespace HomeAccounting.Infrastructure.Services
 
     public class AuthService : IAuthService
     {
-        private readonly IOptions<JwtSettings> _jwtSettings;
+        private readonly JwtSettings _jwtSettings;
         private readonly IUserRepository _userRepository;
 
         public AuthService(IOptions<JwtSettings> jwtSettings, IUserRepository userRepository)
         {
-            _jwtSettings = jwtSettings;
+            _jwtSettings = jwtSettings.Value;
             _userRepository = userRepository;
         }
 
-        public Task<AuthResponse> Login(AuthRequest request)
+        public async Task<AuthResponse> Login(AuthRequest request)
         {
+            var user = await _userRepository.FindUserByLoginAsync(request.Login);
+
+            if (user == null)
+            {
+                throw new Exception($"Login '{request.Login}' does not exist.");
+            }
+            else if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                throw new Exception("Wrong password.");
+            }
+            else
+            {
+                return new AuthResponse() { UserName = request.Login, Token = CreateToken(user) };
+            }
+
             throw new NotImplementedException();
         }
 
@@ -59,8 +77,6 @@ namespace HomeAccounting.Infrastructure.Services
             {
                 throw new Exception($"Database error: {ex.Message} ");
             }
-
-
         }
 
         /// <summary>
@@ -69,11 +85,27 @@ namespace HomeAccounting.Infrastructure.Services
         /// <returns>
         /// return token value for bearer auth
         /// </returns>
-        private JwtSecurityToken GenerateToken()
+        private string CreateToken(FamilyMember user)
         {
-            var jwtSecutiryToken = new JwtSecurityToken();
 
-            return jwtSecutiryToken;
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Name)
+            };
+
+            var secutrityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            var singinCreds = new SigningCredentials(secutrityKey, SecurityAlgorithms.HmacSha256);
+
+            var jwtToken = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                signingCredentials: singinCreds,
+                expires: DateTime.Now.AddMinutes(_jwtSettings.DurationInMinutes)
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
         }
 
 

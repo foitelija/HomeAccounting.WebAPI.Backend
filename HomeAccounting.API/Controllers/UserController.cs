@@ -29,9 +29,20 @@ namespace HomeAccounting.API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
 
-
-
+        [HttpPost("login")]
+        public async Task<ActionResult<AuthResponse>> Login(AuthRequest request)
+        {
+            try
+            {
+                var response = await _authService.Login(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
