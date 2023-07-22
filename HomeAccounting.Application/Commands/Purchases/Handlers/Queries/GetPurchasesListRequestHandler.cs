@@ -1,11 +1,12 @@
 ﻿using HomeAccounting.Application.Commands.Purchases.Requests.Queries;
 using HomeAccounting.Application.Interfaces.Persistence;
 using HomeAccounting.Domain;
+using HomeAccounting.Domain.Purchases;
 using MediatR;
 
 namespace HomeAccounting.Application.Commands.Purchases.Handlers.Queries
 {
-    public class GetPurchasesListRequestHandler : IRequestHandler<GetPurchasesListRequest, List<Purchase>>
+    public class GetPurchasesListRequestHandler : IRequestHandler<GetPurchasesListRequest, List<PurchaseList>>
     {
         private readonly IPurchaseRepository _purchaseRepository;
 
@@ -14,10 +15,29 @@ namespace HomeAccounting.Application.Commands.Purchases.Handlers.Queries
             _purchaseRepository = purchaseRepository;
         }
 
-        public async Task<List<Purchase>> Handle(GetPurchasesListRequest request, CancellationToken cancellationToken)
+        public async Task<List<PurchaseList>> Handle(GetPurchasesListRequest request, CancellationToken cancellationToken)
         {
-            var purchases = await _purchaseRepository.GetPurchasesListWithDetailsAsync();
+            var purchases = await GetPurchasesListWithoutSecretData();
             return purchases;
         }
+
+        private async Task<List<PurchaseList>> GetPurchasesListWithoutSecretData()
+        {
+            var secretPurchases = await _purchaseRepository.GetPurchasesListWithDetailsAsync();
+
+            var purchases = secretPurchases.Select(secretPurchases => new PurchaseList
+            {
+                Id = secretPurchases.Id,
+                UserName = secretPurchases.FamilyMember.Name,
+                UserLogin = secretPurchases.FamilyMember.Login,
+                Category = secretPurchases.Category,
+                CategoryId = secretPurchases.CategoryId,
+                Price = secretPurchases.Price,
+                Comment = secretPurchases.Comment,
+            }).ToList();
+
+            return purchases;
+        }
+
     }
 }

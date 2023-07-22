@@ -34,17 +34,15 @@ namespace HomeAccounting.Application.Commands.Purchases.Handlers.Commands
                 {
                     CategoryId = category.Id,
                     Category = category,
-                    FamilyMemberId = request.Purchase.FamilyMemberId,
+                    FamilyMemberId = request.userId,
                     Price = request.Purchase.Price,
                     Comment = request.Purchase.Comment,
                 });
 
-
-
-                purchase = await _purchaseRepository.Add(purchase);
+                var result = await _purchaseRepository.Add(purchase);
 
                 response.Message = "Creation.";
-                response.Id = request.Purchase.Id;
+                response.Id = result.Id;
             }
             catch (Exception ex)
             {

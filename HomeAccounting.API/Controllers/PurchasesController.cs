@@ -44,9 +44,10 @@ namespace HomeAccounting.API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [Authorize]
-        public async Task<ActionResult<BaseServicesResponse>> Post([FromBody] Purchase purchase)
+        public async Task<ActionResult<BaseServicesResponse>> Post([FromBody] PurchaseCreate purchase)
         {
-            var command = new CreatePurchaseCommand { Purchase = purchase };
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0";
+            var command = new CreatePurchaseCommand { Purchase = purchase, userId = int.Parse(userId) };
             var response = await _mediator.Send(command);
             return Ok(response);
         }
