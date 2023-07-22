@@ -25,6 +25,11 @@ namespace HomeAccounting.Application.Commands.Purchases.Handlers.Commands
             {
                 var purchase = await _purchaseRepository.GetById(request.Id);
 
+                if (purchase.FamilyMemberId != request.userID)
+                {
+                    throw new Exception("Вам ограничен доступ к этим данным.");
+                }
+
                 await _purchaseRepository.Delete(purchase);
 
                 response.Id = purchase.Id;

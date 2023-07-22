@@ -11,5 +11,6 @@ namespace HomeAccounting.Application.Commands.Purchases.Requests.Commands
     public class DeletePurchaseCommand : IRequest<BaseServicesResponse>
     {
         public int Id { get; set; }
+        public int userID { get; set; }
     }
 }

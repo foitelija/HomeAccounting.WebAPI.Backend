@@ -25,8 +25,14 @@ namespace HomeAccounting.Application.Commands.Purchases.Handlers.Commands
             {
                 var purchase = await _purchaseRepository.GetPurchasesWithDetailsAsync(request.Id);
 
-                purchase.FamilyMemberId = request.Purchase.FamilyMemberId;
+                if (purchase.FamilyMemberId != request.userId)
+                {
+                    throw new Exception("Вам ограничен доступ к этим данным.");
+                }
+
                 purchase.CategoryId = request.Purchase.CategoryId;
+                purchase.Comment = request.Purchase.Comment;
+                purchase.Price = request.Purchase.Price;
 
                 await _purchaseRepository.Update(purchase);
 
@@ -39,6 +45,7 @@ namespace HomeAccounting.Application.Commands.Purchases.Handlers.Commands
                 response.ErrorMessage = ex.Message;
                 response.Message = "Something went wrong on update.";
             }
+
             
             return response;
         }
