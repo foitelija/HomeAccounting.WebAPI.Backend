@@ -90,8 +90,8 @@ namespace HomeAccounting.Infrastructure.Services
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name)
+                new Claim(ClaimTypes.Name, user.Login),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
             var secutrityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
@@ -102,7 +102,7 @@ namespace HomeAccounting.Infrastructure.Services
                 audience: _jwtSettings.Audience,
                 claims: claims,
                 signingCredentials: singinCreds,
-                expires: DateTime.Now.AddMinutes(_jwtSettings.DurationInMinutes)
+                expires: DateTime.UtcNow.AddDays(_jwtSettings.DurationInMinutes)
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(jwtToken);
