@@ -1,7 +1,13 @@
 ﻿using HomeAccounting.Application.Interfaces.Identity;
 using HomeAccounting.Application.Models.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace HomeAccounting.API.Controllers
 {
@@ -43,6 +49,22 @@ namespace HomeAccounting.API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [Authorize]
+        [HttpPost("refresh")]
+        public async Task<ActionResult<AuthResponse>> RefreshToken()
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest("Token is missing.");
+            }
+
+            var response = await _authService.UserTokenRefrest(new RefreshTokenRequest { Token = token });
+
+            return Ok(response);
         }
     }
 }

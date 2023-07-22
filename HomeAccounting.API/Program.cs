@@ -27,8 +27,11 @@ builder.Services.AddSwaggerGen(c =>
     // Добавьте описание аутентификации через JWT в Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
+        Name = "Authorization",
         Description = "JWT Authorization header using the Bearer scheme.",
         Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
         Scheme = "bearer"
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement

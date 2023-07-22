@@ -2,6 +2,8 @@
 using HomeAccounting.Application.Interfaces.Persistence;
 using HomeAccounting.Application.Models.Identity;
 using HomeAccounting.Domain;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -78,37 +80,23 @@ namespace HomeAccounting.Infrastructure.Services
                 throw new Exception($"Database error: {ex.Message} ");
             }
         }
-
-        /// <summary>
-        ///  Craeate Token, Claims, expires, creds
-        /// </summary>
-        /// <returns>
-        /// return token value for bearer auth
-        /// </returns>
-        private string CreateToken(FamilyMember user)
+      
+        public async Task<AuthResponse> UserTokenRefrest(RefreshTokenRequest request)
         {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameters = GetValidationParameters();
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Login),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-            };
+            var claimsPrincipal = await tokenHandler.ValidateTokenAsync(request.Token, validationParameters);
 
-            var secutrityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-            var singinCreds = new SigningCredentials(secutrityKey, SecurityAlgorithms.HmacSha256);
+            var userId = claimsPrincipal.ClaimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userLogin = claimsPrincipal.ClaimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
 
-            var jwtToken = new JwtSecurityToken(
-                issuer: _jwtSettings.Issuer,
-                audience: _jwtSettings.Audience,
-                claims: claims,
-                signingCredentials: singinCreds,
-                expires: DateTime.UtcNow.AddDays(_jwtSettings.DurationInMinutes)
-                );
+            var newToken = CreateToken(new FamilyMember { Id = int.Parse(userId), Login = userLogin });
 
-            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+            return new AuthResponse() {Token = newToken, UserName = userLogin };
         }
 
-
+        #region PASSWORD
         private void CreatePasswordHas(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
@@ -127,5 +115,45 @@ namespace HomeAccounting.Infrastructure.Services
                 return computedHash.SequenceEqual(passwordHash);
             }
         }
+        #endregion
+
+        #region JWT TOKEN
+        private JwtSecurityToken GetJwtSecurityToken(IEnumerable<Claim> claims, SigningCredentials? credentials)
+        {
+            return new JwtSecurityToken(issuer: _jwtSettings.Issuer, audience: _jwtSettings.Audience, claims: claims, signingCredentials: credentials, expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes));
+        }
+
+        private TokenValidationParameters GetValidationParameters()
+        {
+            return new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false, // Для Refresh-token надо тут поставить на false будет.
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero,
+                ValidIssuer = _jwtSettings.Issuer,
+                ValidAudience = _jwtSettings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key))
+            };
+        }
+
+        private string CreateToken(FamilyMember user)
+        {
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Login),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
+
+            var secutrityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            var singinCreds = new SigningCredentials(secutrityKey, SecurityAlgorithms.HmacSha256);
+
+            var jwtToken = GetJwtSecurityToken(claims, singinCreds);
+
+            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        }
+        #endregion
     }
 }

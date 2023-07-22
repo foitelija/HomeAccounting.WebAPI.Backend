@@ -32,7 +32,7 @@ namespace HomeAccounting.Infrastructure
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidateLifetime = true, 
+                    ValidateLifetime = false, // Для Refresh-token надо тут поставить на false будет.
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,
                     ValidIssuer = configuration["JwtSettings:Issuer"],
