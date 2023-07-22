@@ -24,7 +24,9 @@ builder.Services.ConfigureInfrastructureServices(builder.Configuration);
 builder.Services
     .AddHealthChecks()
     .AddCheck<CurrencyApiHealth>("API НБРБ")
-    .AddCheck<DbHealthCheck>("База данных");
+    .AddCheck<DbHealthCheck>("База данных")
+    .AddCheck<PurchaseHealth>("Список покупок из БД")
+    .AddCheck<CategoryHealth>("Список категорий из БД");
 builder.Services
     .AddHealthChecksUI(options =>
     {

@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Net.Http;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace HomeAccounting.API.HealthcheckServices
 {
-    public class CurrencyApiHealth : IHealthCheck
+    public class CategoryHealth : IHealthCheck
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public CurrencyApiHealth(IHttpClientFactory httpClientFactory)
+        public CategoryHealth(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
@@ -16,7 +14,7 @@ namespace HomeAccounting.API.HealthcheckServices
         {
             using (var httpClient = _httpClientFactory.CreateClient())
             {
-                var response = await httpClient.GetAsync("https://api.nbrb.by/exrates/rates/USD?parammode=2");
+                var response = await httpClient.GetAsync("https://localhost:7289/api/categories");
                 if (response.IsSuccessStatusCode)
                 {
                     return await Task.FromResult(new HealthCheckResult(

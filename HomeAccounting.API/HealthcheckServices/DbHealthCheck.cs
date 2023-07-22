@@ -19,15 +19,14 @@ namespace HomeAccounting.API.HealthcheckServices
                 _context.Database.OpenConnection();
                 _context.Database.CloseConnection();
                 return Task.FromResult(
-                        HealthCheckResult.Healthy("The database is up and running."));
+                        HealthCheckResult.Healthy("База данных поднята и работает."));
             }
             catch (Exception)
             {
                 return Task.FromResult(
                     new HealthCheckResult(
-                        context.Registration.FailureStatus, "The database is down."));
+                        context.Registration.FailureStatus, "База данных отключена"));
             }
-            throw new NotImplementedException();
         }
     }
 }
