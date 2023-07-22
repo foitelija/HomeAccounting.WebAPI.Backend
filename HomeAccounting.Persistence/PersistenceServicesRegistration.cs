@@ -23,6 +23,7 @@ namespace HomeAccounting.Persistence
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 

@@ -1,4 +1,5 @@
-﻿using HomeAccounting.Application.Interfaces.Infrastructure;
+﻿using HomeAccounting.Application.Interfaces.Identity;
+using HomeAccounting.Application.Interfaces.Infrastructure;
 using HomeAccounting.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ namespace HomeAccounting.Infrastructure
         {
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddScoped<IPurchaseReportService, PurchaseReportService>();
+            services.AddScoped<IAuthService, AuthService>();
             return services;
         }
     }
