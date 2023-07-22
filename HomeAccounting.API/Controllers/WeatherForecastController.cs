@@ -1,6 +1,7 @@
 using HomeAccounting.Application.Interfaces.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,7 +19,6 @@ namespace HomeAccounting.API.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly IAuthService _authService;
-        private readonly IUrlHelper _urlHelper;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger, IAuthService authService)
         {

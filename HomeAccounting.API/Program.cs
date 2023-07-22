@@ -3,6 +3,7 @@ using HomeAccounting.API.HealthcheckServices;
 using HomeAccounting.Application;
 using HomeAccounting.Infrastructure;
 using HomeAccounting.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -24,7 +25,6 @@ builder.Services
     .AddHealthChecks()
     .AddCheck<CurrencyApiHealth>("API НБРБ")
     .AddCheck<DbHealthCheck>("База данных");
-    //.AddCheck<WeatherApiHealth>("тестовое");
 builder.Services
     .AddHealthChecksUI(options =>
     {
@@ -43,6 +43,8 @@ builder.Services.AddRouting(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true;
 });
+builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+builder.Services.AddHttpContextAccessor();
 #endregion
 
 #region SWAGGER SETTINGS
@@ -102,7 +104,7 @@ app.MapHealthChecks("/healthcheck", new()
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
-app.MapHealthChecksUI(options => options.UIPath = "/dashboard");
+app.MapHealthChecksUI(options => options.UIPath = "/dashboard").AllowAnonymous();
 #endregion
 
 app.UseAuthentication();
