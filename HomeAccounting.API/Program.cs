@@ -43,8 +43,6 @@ builder.Services.AddRouting(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true;
 });
-builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
-builder.Services.AddHttpContextAccessor();
 #endregion
 
 #region SWAGGER SETTINGS
