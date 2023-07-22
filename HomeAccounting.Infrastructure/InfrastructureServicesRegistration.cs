@@ -20,6 +20,7 @@ namespace HomeAccounting.Infrastructure
 
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddScoped<IPurchaseReportService, PurchaseReportService>();
+            services.AddHttpClient<CurrencyService>();
             services.AddTransient<IAuthService, AuthService>();
 
             services.AddAuthentication(options =>

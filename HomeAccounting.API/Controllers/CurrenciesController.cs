@@ -1,9 +1,7 @@
-﻿using HomeAccounting.Application.Commands.Currencies.Requests.Queries;
-using HomeAccounting.Application.Commands.Purchases.Requests.Queries;
+﻿using HomeAccounting.Application.Commands.Purchases.Requests.Queries;
 using HomeAccounting.Application.Interfaces.Infrastructure;
 using HomeAccounting.Domain.Currency;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeAccounting.API.Controllers
@@ -26,11 +24,8 @@ namespace HomeAccounting.API.Controllers
         {
             try
             {
-                var purchase = await _mediator.Send(new GetPurchaseDetailRequest { Id = purchaseCode });
-                
-                var rates = await _mediator.Send(new GetRatesListRequest { Cur_ID = currCode });
-                
-                var conversion = await _currencyService.GetCurrencyResponseAsync(rates, purchase);
+                var purchase = await _mediator.Send(new GetPurchaseDetailRequest { Id = purchaseCode });   
+                var conversion = await _currencyService.GetCurrencyResponseAsync(currCode, purchase);
 
                 return conversion;
             }

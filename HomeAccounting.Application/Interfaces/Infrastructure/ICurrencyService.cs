@@ -10,6 +10,6 @@ namespace HomeAccounting.Application.Interfaces.Infrastructure
 {
     public interface ICurrencyService
     {
-        Task<СurrencyСonversion> GetCurrencyResponseAsync(List<Rates> rates, Purchase purchase);
+        Task<СurrencyСonversion> GetCurrencyResponseAsync(int curr_Id, Purchase purchase);
     }
 }

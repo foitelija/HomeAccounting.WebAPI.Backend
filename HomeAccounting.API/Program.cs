@@ -1,5 +1,4 @@
 using HomeAccounting.Application;
-using HomeAccounting.Application.Commands.Currencies.Handlers.Queries;
 using HomeAccounting.Infrastructure;
 using HomeAccounting.Persistence;
 using Microsoft.OpenApi.Models;
@@ -13,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureApplicationServices();
 builder.Services.ConfigurePersistenceServices(builder.Configuration);
 builder.Services.ConfigureInfrastructureServices(builder.Configuration);
-builder.Services.AddHttpClient<GetRatesListRequestHandler>();
 #endregion
 
 builder.Services.AddControllers();
