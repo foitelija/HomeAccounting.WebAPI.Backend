@@ -31,18 +31,21 @@ namespace HomeAccounting.API.Controllers
         /// 
         ///     GET/
         ///     [
-        ///         {
-        ///    "id": 1,
-        ///    "dateCreated": "2023-07-23T13:50:48.074Z",
-        ///    "name": "string1"
-        ///         },
-        ///         {
-        ///    "id": 2,
-        ///    "dateCreated": "2023-07-23T13:50:48.074Z",
-        ///    "name": "string2"
+        ///      {
+        ///        "id": 1,
+        ///        "dateCreated": "2023-07-23T13:50:48.074Z",
+        ///        "name": "string1"
+        ///        "ColorHexCode" "#ff33333",
+        ///             },
+        ///             {
+        ///        "id": 2,
+        ///        "dateCreated": "2023-07-23T13:50:48.074Z",
+        ///        "name": "string2"
+        ///        "ColorHexCode" "#ff33333"
+        ///                 }
+        ///             ]
         ///         }
         ///     ]
-        ///     
         /// </remarks>
         /// <returns>
         ///</returns>
@@ -62,12 +65,12 @@ namespace HomeAccounting.API.Controllers
         /// 
         /// Пример возвращает категорию: 
         /// 
-        ///     GET/id
-        ///     
+        ///     GET/id   
         ///         {
-        ///    "id": 1,
-        ///    "dateCreated": "2023-07-23T13:50:48.074Z",
-        ///    "name": "string1"
+        ///          "id": 1,
+        ///          "dateCreated": "2023-07-23T13:50:48.074Z",
+        ///          "name": "string1",
+        ///          "ColorHexCode" "#ff33333"
         ///         }
         ///     
         /// </remarks>
@@ -92,11 +95,11 @@ namespace HomeAccounting.API.Controllers
         /// Пример запроса: 
         /// 
         ///     Post/
-        ///     
         ///         {
-        ///    "id": 0, - указывать не нужно, EF Core ставит сам.
-        ///    "dateCreated": "2023-07-23T13:50:48.074Z",
-        ///    "name": "Новая категория затрат"
+        ///          "id": 0, - указывать не нужно, EF Core ставит сам.
+        ///          "dateCreated": "2023-07-23T13:50:48.074Z",
+        ///          "name": "Новая категория затрат",
+        ///          "ColorHexCode" "#ff33333"
         ///         }
         ///     
         /// </remarks>
@@ -123,11 +126,11 @@ namespace HomeAccounting.API.Controllers
         /// Пример запроса: 
         /// 
         ///     PUT/id
-        ///     
         ///         {
-        ///    "id": 0, - указывать не нужно
-        /// "dateCreated": "2023-07-23T13:56:09.748Z",
-        /// "name": "Новая категория затрат 2"
+        ///             "id": 0, - указывать не нужно
+        ///          "dateCreated": "2023-07-23T13:56:09.748Z",
+        ///          "name": "Новая категория затрат 2",
+        ///          "ColorHexCode" "#ff33333"
         ///         }
         ///     
         /// </remarks>
