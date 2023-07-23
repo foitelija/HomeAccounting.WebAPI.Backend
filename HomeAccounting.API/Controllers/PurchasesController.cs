@@ -23,7 +23,13 @@ namespace HomeAccounting.API.Controllers
         {
             _mediator = mediator;
         }
-        // GET: api/<PurchasesController>
+
+        /// <summary>
+        /// Получить все покупки
+        /// </summary>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение</response>
         [HttpGet]
         public async Task<ActionResult<List<Purchase>>> Get()
         {
@@ -31,7 +37,15 @@ namespace HomeAccounting.API.Controllers
             return Ok(purchases);
         }
 
-        // GET api/<PurchasesController>/5
+        /// <summary>
+        /// Получить покупку по ID
+        /// </summary>
+        /// <remarks>
+        /// Параметром преедаётся ID продукта 
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<Purchase>> Get(int id)
         {
@@ -39,14 +53,38 @@ namespace HomeAccounting.API.Controllers
             return Ok(purchase);
         }
 
-        // POST api/<PurchasesController>
+        /// <summary>
+        /// Добавление новой покупки
+        /// </summary>
+        /// <remarks>
+        /// Доступно только авторизованным пользователям
+        /// Пример запроса:
+        /// Возвращает формат BaseServiceResponse, 200 код, но может быть ошибка.
+        /// ID пользователя тянется автоматически из Клэймов
+        /// 
+        ///     POST/
+        ///     {
+        ///        "categoryId" : 1, 
+        ///        "price" : 111,
+        ///        "comment": "Наушники Razer"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение</response>
+        /// <response code="400">Ошибка пользователя, почему-то не нашёл его.</response>
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
         [Authorize]
         public async Task<ActionResult<BaseServicesResponse>> Post([FromBody] PurchaseCreate purchase)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0";
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if(string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Ошибка пользователя");
+            }
+
             var command = new CreatePurchaseCommand { Purchase = purchase, userId = int.Parse(userId) };
             var response = await _mediator.Send(command);
             return Ok(response);
