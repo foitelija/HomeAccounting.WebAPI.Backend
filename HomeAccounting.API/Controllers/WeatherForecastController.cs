@@ -26,7 +26,21 @@ namespace HomeAccounting.API.Controllers
             _logger = logger;
         }
 
+
+        /// <summary>
+        /// Получение погоды
+        /// </summary>
+        /// <remarks>
+        /// Настроена проверка токена,
+        /// если срок действия токена истёк, выбьет ошибку
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Успешное выполнение</response>
+        /// <response code="401">Не авторизован</response>
+        /// <response code="400">Ошибка запроса</response>
+        /// 
         [HttpGet(Name = "GetWeatherForecast")]
+        [Authorize]
         public ActionResult Get()
         {
             try

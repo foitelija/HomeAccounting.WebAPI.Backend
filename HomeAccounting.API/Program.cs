@@ -50,7 +50,12 @@ builder.Services.AddRouting(options =>
 #region SWAGGER SETTINGS
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API Name", Version = "v1" });
+    var basePath = AppContext.BaseDirectory;
+    var xmlPath = Path.Combine(basePath, "HomeAccounting.API.xml");
+
+    c.IncludeXmlComments(xmlPath);
+
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Home Accounting API", Version = "v1" });
     // Добавьте описание аутентификации через JWT в Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
