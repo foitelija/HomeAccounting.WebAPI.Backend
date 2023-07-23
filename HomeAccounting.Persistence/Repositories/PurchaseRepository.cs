@@ -78,7 +78,7 @@ namespace HomeAccounting.Persistence.Repositories
 
         public async Task<bool> IsCategoryUsedAsync(int categoryId)
         {
-            return await _context.Categories.AnyAsync(c => c.Id == categoryId);
+            return await _context.PurchaseOrders.AnyAsync(c => c.CategoryId == categoryId);
         }
     }
 }
