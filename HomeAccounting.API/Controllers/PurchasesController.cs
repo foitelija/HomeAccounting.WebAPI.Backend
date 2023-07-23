@@ -27,11 +27,34 @@ namespace HomeAccounting.API.Controllers
         /// <summary>
         /// Получить все покупки
         /// </summary>
+        /// <remarks>
+        /// Пример возвращаемых значений
+        /// 
+        ///     Get/
+        ///     {
+        ///        "userName": "Nikolay",
+        ///        "userLogin": "string",
+        ///        "category": {
+        ///          "name": "Развлечения",
+        ///          "id": 5,
+        ///          "dateCreated": null
+        ///        },
+        ///        "categoryId": 5,
+        ///        "price": 32,
+        ///        "comment": "claim test 2",
+        ///        "id": 2,
+        ///        "dateCreated": "2023-07-19T16:00:52.5934997"
+        ///     },
+        ///     {
+        ///         "next value"
+        ///     }
+        ///    
+        /// </remarks>    
         /// <returns>
         ///</returns>
         /// <response code="200">Успешное выполнение</response>
         [HttpGet]
-        public async Task<ActionResult<List<Purchase>>> Get()
+        public async Task<ActionResult<List<PurchaseList>>> Get()
         {
             var purchases = await _mediator.Send(new GetPurchasesListRequest());
             return Ok(purchases);
@@ -74,6 +97,7 @@ namespace HomeAccounting.API.Controllers
         ///</returns>
         /// <response code="200">Успешное выполнение</response>
         /// <response code="400">Ошибка пользователя, почему-то не нашёл его.</response>
+        /// <response code="401">Ограничение доступа.</response>
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<BaseServicesResponse>> Post([FromBody] PurchaseCreate purchase)
@@ -90,7 +114,36 @@ namespace HomeAccounting.API.Controllers
             return Ok(response);
         }
 
-        // PUT api/<PurchasesController>/5
+        /// <summary>
+        /// Обновление уже существующей покупки
+        /// </summary>
+        /// <remarks>
+        /// Доступно только авторизованным пользователям
+        /// Пример запроса:
+        /// Возвращает формат BaseServiceResponse, 200 код, но может быть ошибка.
+        /// ID пользователя тянется автоматически из Клэймов
+        /// Указывается ID изменяемой покупки, потом как JSON передаём 
+        /// 
+        ///     Было:
+        ///     PUT/
+        ///     {
+        ///        "categoryId" : 1, 
+        ///        "price" : 111, 
+        ///        "comment": "Наушники Razer"
+        ///     }
+        ///     Стало
+        ///     PUT/
+        ///     {
+        ///        "categoryId" : 1, 
+        ///        "price" : 130, 
+        ///        "comment": "Наушники Logitech"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение.</response>
+        /// <response code="401">Ограничение доступа.</response>
         [HttpPut("{id}")]
         [Authorize]
         public async Task<ActionResult<BaseServicesResponse>> Put(int id, [FromBody] PurchaseUpdate purchase)
@@ -104,6 +157,21 @@ namespace HomeAccounting.API.Controllers
 
 
         // DELETE api/<PurchasesController>/5
+        /// <summary>
+        /// Удаление покупки
+        /// </summary>
+        /// <remarks>
+        /// Доступно только авторизованным пользователям
+        /// Возвращает формат BaseServiceResponse, 200 код, но может быть ошибка.
+        /// ID пользователя тянется автоматически из Клэймов
+        /// Указывается ID удаляемой покупки
+        ///     
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение.</response>
+        /// <response code="401">Ограничение доступа.</response>
+        /// <response code="400">Какая-нибудь другая ошибка, в BaseServiceResponse есть ErrorMessage.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]

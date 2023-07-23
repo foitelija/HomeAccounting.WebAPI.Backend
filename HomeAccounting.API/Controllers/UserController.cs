@@ -22,7 +22,23 @@ namespace HomeAccounting.API.Controllers
             _authService = authService;
         }
 
-
+        /// <summary>
+        /// Регистрация новго пользователя
+        /// </summary>
+        /// <remarks>
+        /// На вход передаём логин, ник и пароль.
+        ///  Возвращаем ID созданного пользователя
+        ///  
+        ///     Post/
+        ///         {
+        ///             "userId": 1
+        ///         }
+        ///     
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение</response>
+        /// <response code="500">Иная ошибка</response>
         [HttpPost("register")]
         public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
         {
@@ -36,7 +52,24 @@ namespace HomeAccounting.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Автороизация пользователя
+        /// </summary>
+        /// <remarks>
+        /// На вход передаём логин и пароль.
+        ///  Возвращаем имя пользователя и токен
+        ///  
+        ///     Post/
+        ///         {
+        ///             "userName": "goker111",
+        ///             "token": "dkawdjahwudyhawyuidtwayjgey12g4hk12gh4uh12gh4jk12h4uj124.124k124j12i412uyuaydhuawdawodpawoiAWDHAWjdhawj"
+        ///         }
+        ///     
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение</response>
+        /// <response code="500">Иная ошибка</response>
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login(AuthRequest request)
         {
@@ -50,7 +83,25 @@ namespace HomeAccounting.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Обновление токена пользователя
+        /// </summary>
+        /// <remarks>
+        /// Доступно только авторизованому пользователю
+        /// Никакие параметры не передаём. Из headers тянем Bearer токен и потом меняем его.
+        /// Возвращаем имя пользователя и новый токен
+        /// 
+        ///     Post/
+        ///         {
+        ///             "userName": "goker111",
+        ///             token": "dkawdjahwudyhawyuidtwayjgey12g4hk12gh4uh12gh4jk12h4uj124.124k124j12i412uyuaydhuawdawodpawoiAWDHAWjdhawj"
+        ///         }
+        ///         
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение</response>
+        /// <response code="400">Токен не найден</response>
         [Authorize]
         [HttpPost("refresh")]
         public async Task<ActionResult<AuthResponse>> RefreshToken()

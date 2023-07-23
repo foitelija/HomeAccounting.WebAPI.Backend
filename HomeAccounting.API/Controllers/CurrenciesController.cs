@@ -19,6 +19,19 @@ namespace HomeAccounting.API.Controllers
             _currencyService = currencyService;
         }
 
+        /// <summary>
+        /// Конвертация потраченых денег, в разные валюты.
+        /// </summary>
+        /// <remarks>
+        /// Возвращает модель СurrencyСonversion. Сразу забиты в ENUM 3 валюты. Обращение происходит к API НБРБ.
+        /// Указываем код покупки, которую ходим сконвертировать по текущему курсу [ purchaseCode ].
+        /// Если хотим какую-нибудь другую валюту, может указать её во входной параметр [ currCode ]
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение</response>
+        /// <response code="400">Код покупки не указан или Http Ошибка при обращение к API НБРБ</response>
+        /// <response code="500">Иные ошибки</response>
         [HttpGet("Convert")]
         public async Task<ActionResult<СurrencyСonversion>> Get([FromQuery] int purchaseCode, [FromQuery] int currCode)
         {

@@ -21,7 +21,32 @@ namespace HomeAccounting.API.Controllers
             _mediator = mediator;
         }
 
-        // GET: api/<CategoriesController>
+        /// <summary>
+        /// Список всех категорий
+        /// </summary>
+        /// <remarks>
+        /// Возвращает формат BaseServiceResponse, 200 код, но может быть ошибка.
+        /// 
+        /// Пример возвращается как список List: 
+        /// 
+        ///     GET/
+        ///     [
+        ///         {
+        ///    "id": 1,
+        ///    "dateCreated": "2023-07-23T13:50:48.074Z",
+        ///    "name": "string1"
+        ///         },
+        ///         {
+        ///    "id": 2,
+        ///    "dateCreated": "2023-07-23T13:50:48.074Z",
+        ///    "name": "string2"
+        ///         }
+        ///     ]
+        ///     
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение или иная другая ошибка, которая прописывается в поле errorMessage.</response>
         [HttpGet]
         public async Task<ActionResult<List<Category>>> Get()
         {
@@ -29,6 +54,26 @@ namespace HomeAccounting.API.Controllers
             return Ok(categories);
         }
 
+        /// <summary>
+        /// Уникальная категория по ID
+        /// </summary>
+        /// <remarks>
+        /// Возвращает формат BaseServiceResponse, 200 код, но может быть ошибка.
+        /// 
+        /// Пример возвращает категорию: 
+        /// 
+        ///     GET/id
+        ///     
+        ///         {
+        ///    "id": 1,
+        ///    "dateCreated": "2023-07-23T13:50:48.074Z",
+        ///    "name": "string1"
+        ///         }
+        ///     
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение</response>
         // GET: api/<CategoriesController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> Get(int id)
@@ -37,6 +82,28 @@ namespace HomeAccounting.API.Controllers
             return Ok(category);
         }
 
+
+        /// <summary>
+        /// Добавление новой категории
+        /// </summary>
+        /// <remarks>
+        /// Возвращает формат BaseServiceResponse, 200 код, но может быть ошибка.
+        /// 
+        /// Пример запроса: 
+        /// 
+        ///     Post/
+        ///     
+        ///         {
+        ///    "id": 0, - указывать не нужно, EF Core ставит сам.
+        ///    "dateCreated": "2023-07-23T13:50:48.074Z",
+        ///    "name": "Новая категория затрат"
+        ///         }
+        ///     
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение или иная другая ошибка, которая прописывается в поле errorMessage.</response>
+        /// <response code="400">Что-то пошло не так</response>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -47,6 +114,26 @@ namespace HomeAccounting.API.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Добавление новой категории
+        /// </summary>
+        /// <remarks>
+        /// Возвращает формат BaseServiceResponse, 200 код, но может быть ошибка. В BaseServiceResponse есть ErrorMessage, где можно посмотреть, что за ошибка.
+        /// Передаём параметром ID обновляемой категории.
+        /// Пример запроса: 
+        /// 
+        ///     PUT/id
+        ///     
+        ///         {
+        ///    "id": 0, - указывать не нужно
+        /// "dateCreated": "2023-07-23T13:56:09.748Z",
+        /// "name": "Новая категория затрат 2"
+        ///         }
+        ///     
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение или иная другая ошибка, которая прописывается в поле errorMessage.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -57,6 +144,17 @@ namespace HomeAccounting.API.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Удаление категории
+        /// </summary>
+        /// <remarks>
+        /// Возвращает формат BaseServiceResponse, 200 код, но может быть ошибка.
+        /// Указывается ID удаляемой категории. Если она уже используется в какой-нибудь покупке, из метода возвращается BaseServiceResponse  с кодом 200 и сообщением, 
+        /// "You cannot delete a category because it is being used"
+        /// </remarks>
+        /// <returns>
+        ///</returns>
+        /// <response code="200">Успешное выполнение или иная другая ошибка, которая прописывается в поле errorMessage.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
