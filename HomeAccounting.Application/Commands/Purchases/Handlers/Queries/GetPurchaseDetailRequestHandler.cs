@@ -44,6 +44,7 @@ namespace HomeAccounting.Application.Commands.Purchases.Handlers.Queries
                 CategoryId = secretPurchases.CategoryId,
                 Price = secretPurchases.Price,
                 Comment = secretPurchases.Comment,
+                DateCreated = secretPurchases.DateCreated
             };
 
             return purchases;
