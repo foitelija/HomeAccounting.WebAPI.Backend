@@ -3,10 +3,6 @@ using HomeAccounting.API.HealthcheckServices;
 using HomeAccounting.Application;
 using HomeAccounting.Infrastructure;
 using HomeAccounting.Persistence;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.OpenApi.Models;
 
 
