@@ -1,4 +1,5 @@
 ﻿using HomeAccounting.Domain;
+using HomeAccounting.Domain.Purchases;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HomeAccounting.Application.Commands.Purchases.Requests.Queries
 {
-    public class GetPurchaseDetailRequest : IRequest<Purchase>
+    public class GetPurchaseDetailRequest : IRequest<PurchaseList>
     {
         public int Id { get; set; }
     }

@@ -2,6 +2,7 @@
 using HomeAccounting.Domain;
 using HomeAccounting.Domain.Currency;
 using HomeAccounting.Domain.Enums;
+using HomeAccounting.Domain.Purchases;
 using MediatR;
 using Newtonsoft.Json;
 using System.Net.Http;
@@ -16,7 +17,7 @@ namespace HomeAccounting.Infrastructure.Services
         {
             _httpClient = httpClient;
         }
-        public async Task<СurrencyСonversion> GetCurrencyResponseAsync(int curr_Id, Purchase purchase)
+        public async Task<СurrencyСonversion> GetCurrencyResponseAsync(int curr_Id, PurchaseList purchase)
         {
 
             var rates = new List<Rates>();
@@ -47,7 +48,7 @@ namespace HomeAccounting.Infrastructure.Services
 
                 conversion.amountMoneySpent = purchase.Price;
                 conversion.moneySpentOn = purchase.Category.Name;
-                conversion.whoMadePurchase = purchase.FamilyMember.Name;
+                conversion.whoMadePurchase = purchase.UserName;
                 conversion.purchaseComment = purchase.Comment;
                 conversion.currencyConversion = ratesCompare;
 

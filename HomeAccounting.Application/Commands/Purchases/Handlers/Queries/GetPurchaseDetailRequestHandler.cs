@@ -1,6 +1,7 @@
 ﻿using HomeAccounting.Application.Commands.Purchases.Requests.Queries;
 using HomeAccounting.Application.Interfaces.Persistence;
 using HomeAccounting.Domain;
+using HomeAccounting.Domain.Purchases;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace HomeAccounting.Application.Commands.Purchases.Handlers.Queries
 {
-    public class GetPurchaseDetailRequestHandler : IRequestHandler<GetPurchaseDetailRequest, Purchase>
+    public class GetPurchaseDetailRequestHandler : IRequestHandler<GetPurchaseDetailRequest, PurchaseList>
     {
         private readonly IPurchaseRepository _purchaseRepository;
 
@@ -19,14 +20,33 @@ namespace HomeAccounting.Application.Commands.Purchases.Handlers.Queries
             _purchaseRepository = purchaseRepository;
         }
 
-        public async Task<Purchase> Handle(GetPurchaseDetailRequest request, CancellationToken cancellationToken)
+        public async Task<PurchaseList> Handle(GetPurchaseDetailRequest request, CancellationToken cancellationToken)
         {
-            var purchase = await _purchaseRepository.GetPurchasesWithDetailsAsync(request.Id);
-            if (purchase == null)
+            var purchases = await GetPurchaseWithoutSecretData(request.Id);
+            return purchases;
+        }
+
+        private async Task<PurchaseList> GetPurchaseWithoutSecretData(int id)
+        {
+            var secretPurchases = await _purchaseRepository.GetPurchasesWithDetailsAsync(id);
+
+            if(secretPurchases == null)
             {
-                return new Purchase();
+                return new PurchaseList();
             }
-            return purchase;
+
+            var purchases = new PurchaseList
+            {
+                Id = secretPurchases.Id,
+                UserName = secretPurchases.FamilyMember.Name,
+                UserLogin = secretPurchases.FamilyMember.Login,
+                Category = secretPurchases.Category,
+                CategoryId = secretPurchases.CategoryId,
+                Price = secretPurchases.Price,
+                Comment = secretPurchases.Comment,
+            };
+
+            return purchases;
         }
     }
 }
