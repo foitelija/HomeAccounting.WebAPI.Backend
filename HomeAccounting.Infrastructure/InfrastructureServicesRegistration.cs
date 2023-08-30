@@ -3,12 +3,12 @@ using HomeAccounting.Application.Interfaces.Infrastructure;
 using HomeAccounting.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using HomeAccounting.Application.Models.Identity;
+using Quartz;
+using Microsoft.Extensions.Logging;
 
 namespace HomeAccounting.Infrastructure
 {
@@ -16,6 +16,24 @@ namespace HomeAccounting.Infrastructure
     {
         public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddQuartz(options =>
+            {
+                options.UseMicrosoftDependencyInjectionJobFactory();
+                var jobKey = JobKey.Create(nameof(LoggingBackgroundJob));
+                options.AddJob<LoggingBackgroundJob>(jobKey)
+                .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(schedule => schedule.WithIntervalInSeconds(5).RepeatForever()));
+            });
+            services.AddQuartzHostedService(options =>
+            {
+                options.WaitForJobsToComplete = true;
+            });
+
+            services.AddLogging(config =>
+            {
+                config.AddDebug();
+                config.AddConsole();
+            });
+
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
             services.AddScoped<ICurrencyService, CurrencyService>();
